@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
       <div className="text-center mb-16">
-        <h1 className="font-serif text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-br from-white via-accent to-gray-500 text-transparent bg-clip-text">
+        <h1 className="font-serif text-4xl md:text-6xl font-bold mb-4 bg-linear-to-br from-white via-accent to-gray-500 text-transparent bg-clip-text">
           The Premium <br /> Product Catalog
         </h1>
         <p className="text-gray-400 max-w-lg mx-auto">Curated collection of the world's finest automobiles, motorcycles, smartphones & computers.</p>

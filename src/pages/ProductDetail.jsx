@@ -23,7 +23,7 @@ export default function ProductDetail() {
           <img 
             src={product.image} 
             alt={product.itemname} 
-            className="w-full aspect-[4/3] object-cover"
+            className="w-full aspect-4/3 object-cover"
           />
         </div>
 

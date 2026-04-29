@@ -1,4 +1,7 @@
 import { Link } from 'react-router-dom';
+import { Heart, Scale } from 'lucide-react';
+import toast from 'react-hot-toast';
+import useStore from '../store/UseStore';
 
 const categoryColors = {
   Cars: 'bg-cat-cars text-white',
@@ -8,8 +11,32 @@ const categoryColors = {
 };
 
 export default function ProductCard({ item }) {
-  // Create a URL-friendly slug from the item name
   const slug = item.itemname.toLowerCase().replace(/\s+/g, '-');
+  
+  // Zustand hooks
+  const toggleWishlist = useStore((state) => state.toggleWishlist);
+  const addToCompare = useStore((state) => state.addToCompare);
+  const isWishlisted = useStore((state) => state.wishlist.some(p => p.itemname === item.itemname));
+
+  const handleWishlist = (e) => {
+    e.preventDefault(); // Prevents the Link from clicking
+    toggleWishlist(item);
+    if (!isWishlisted) {
+      toast.success(`${item.itemname} saved to wishlist!`, { icon: '🤍' });
+    } else {
+      toast(`${item.itemname} removed.`, { icon: '✕' });
+    }
+  };
+
+  const handleCompare = (e) => {
+    e.preventDefault();
+    const result = addToCompare(item);
+    if (result?.error) {
+      toast.error(result.error);
+    } else {
+      toast.success(`${item.itemname} added to compare.`);
+    }
+  };
 
   return (
     <Link to={`/product/${slug}`} className="group block bg-surface border border-border rounded-xl overflow-hidden hover:-translate-y-1 hover:border-gray-600 transition-all duration-300 relative">
@@ -18,10 +45,19 @@ export default function ProductCard({ item }) {
           src={item.image} 
           alt={item.itemname} 
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          onError={(e) => { e.target.src = 'https://via.placeholder.com/400x300?text=No+Image'; }}
         />
         <div className={`absolute top-3 left-3 text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full backdrop-blur-md ${categoryColors[item.category]}`}>
           {item.category}
+        </div>
+        
+        {/* Floating Action Buttons */}
+        <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button onClick={handleWishlist} className="p-2 bg-black/60 backdrop-blur-md rounded-full border border-gray-600 hover:border-accent hover:text-accent transition-colors text-white">
+            <Heart className="w-4 h-4" fill={isWishlisted ? "currentColor" : "none"} />
+          </button>
+          <button onClick={handleCompare} className="p-2 bg-black/60 backdrop-blur-md rounded-full border border-gray-600 hover:border-accent hover:text-accent transition-colors text-white">
+            <Scale className="w-4 h-4" />
+          </button>
         </div>
       </div>
       <div className="p-4">
@@ -34,9 +70,6 @@ export default function ProductCard({ item }) {
             </div>
           ))}
         </div>
-      </div>
-      <div className="absolute bottom-4 right-4 w-7 h-7 rounded-full border border-gray-600 flex items-center justify-center text-gray-400 group-hover:border-accent group-hover:text-accent transition-colors">
-        →
       </div>
     </Link>
   );
