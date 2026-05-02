@@ -7,6 +7,9 @@ import ProductDetail from "./pages/ProductDetail";
 import Wishlist from "./pages/Wishlist"; // We will build this next
 import Compare from "./pages/Compare";
 import EnquiryModal from "./pages/EnquiryModal";
+import Admin from './pages/Admin';
+import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
 // We will build this next
 // import data from './data.json';
 
@@ -72,7 +75,19 @@ function App() {
         <Route path="/product/:slug" element={<ProductDetail />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/compare" element={<Compare />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/login" element={<Login />} />
+        <Route 
+       path="/admin" 
+       element={
+         <ProtectedRoute>
+           <Admin />
+         </ProtectedRoute>
+       } 
+     />
       </Routes>
+
+      
     </Router>
   );
 }
