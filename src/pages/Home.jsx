@@ -1,23 +1,32 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
-import data from '../data.json';
 import { Search } from 'lucide-react';
-
-const categories = ['All', ...new Set(data.map(item => item.category))];
 
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [products, setProducts] = useState([]);
+
+  // Fetch products from the Go database on load
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/products`)
+      .then(res => res.json())
+      .then(json => setProducts(json || []))
+      .catch(err => console.error("Failed to fetch products:", err));
+  }, []);
+
+  // Dynamically generate categories from the database items
+  const categories = ['All', ...new Set(products.map(item => item.category))];
 
   // Derived state for filtering
   const filteredData = useMemo(() => {
-    return data.filter(item => {
+    return products.filter(item => {
       const matchesCategory = activeFilter === 'All' || item.category === activeFilter;
       const matchesSearch = item.itemname.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             item.category.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [activeFilter, searchQuery]);
+  }, [products, activeFilter, searchQuery]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
